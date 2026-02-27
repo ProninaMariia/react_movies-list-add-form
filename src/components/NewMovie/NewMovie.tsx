@@ -1,7 +1,19 @@
 import { useState } from 'react';
 import { TextField } from '../TextField';
 
-export const NewMovie = () => {
+type Movie = {
+  title: string;
+  description?: string;
+  imgUrl: string;
+  imdbUrl: string;
+  imdbId: string;
+};
+
+type Props = {
+  onAdd: (movie: Movie) => void;
+};
+
+export const NewMovie = ({ onAdd }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imgUrl, setImgUrl] = useState('');
@@ -11,6 +23,16 @@ export const NewMovie = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const newMovie: Movie = {
+      title,
+      description,
+      imgUrl,
+      imdbUrl,
+      imdbId,
+    };
+
+    onAdd(newMovie);
+
     setTitle('');
     setDescription('');
     setImgUrl('');
@@ -18,57 +40,28 @@ export const NewMovie = () => {
     setImdbId('');
   };
 
+  const isDisabled =
+    !title.trim() ||
+    !imgUrl.trim() ||
+    !imdbUrl.trim() ||
+    !imdbId.trim();
+
   return (
     <form className="NewMovie" onSubmit={handleSubmit}>
-      <h2 className="title">Add a movie</h2>
+      <TextField value={title} onChange={setTitle} label="Title" />
+      <TextField value={description} onChange={setDescription} label="Description"/>
+      <TextField value={imgUrl} onChange={setImgUrl} label="Image URL" />
+      <TextField value={imdbUrl} onChange={setImdbUrl} label="IMDB URL" />
+      <TextField value={imdbId} onChange={setImdbId} label="IMDB ID" />
 
-      <TextField
-        name="title"
-        label="Title"
-        value={title}
-        onChange={setTitle}
-        required
-      />
-
-      <TextField
-        name="description"
-        label="Description"
-        value={description}
-        onChange={setDescription}
-      />
-
-      <TextField
-        name="imgUrl"
-        label="Image URL"
-        value={imgUrl}
-        onChange={setImgUrl}
-      />
-
-      <TextField
-        name="imdbUrl"
-        label="Imdb URL"
-        value={imdbUrl}
-        onChange={setImdbUrl}
-      />
-
-      <TextField
-        name="imdbId"
-        label="Imdb ID"
-        value={imdbId}
-        onChange={setImdbId}
-      />
-
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="submit"
-            data-cy="submit-button"
-            className="button is-link"
-          >
-            Add
-          </button>
-        </div>
-      </div>
+      <button
+        type="submit"
+        data-cy="submit-button"
+        className="button is-link"
+        disabled={isDisabled}
+      >
+        Add
+      </button>
     </form>
   );
 };
