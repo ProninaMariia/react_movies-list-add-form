@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import { TextField } from '../TextField';
-
-type Movie = {
-  title: string;
-  description?: string;
-  imgUrl: string;
-  imdbUrl: string;
-  imdbId: string;
-};
+import { Movie } from '../../types/Movie';
 
 type Props = {
   onAdd: (movie: Movie) => void;
@@ -20,8 +13,8 @@ export const NewMovie = ({ onAdd }: Props) => {
   const [imdbUrl, setImdbUrl] = useState('');
   const [imdbId, setImdbId] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
 
     const newMovie: Movie = {
       title,
@@ -32,36 +25,64 @@ export const NewMovie = ({ onAdd }: Props) => {
     };
 
     onAdd(newMovie);
-
-    setTitle('');
-    setDescription('');
-    setImgUrl('');
-    setImdbUrl('');
-    setImdbId('');
+    // очищення не потрібне — форма перезавантажується через key
   };
 
   const isDisabled =
-    !title.trim() ||
-    !imgUrl.trim() ||
+    !title.trim() ||!imgUrl.trim() ||
     !imdbUrl.trim() ||
     !imdbId.trim();
 
   return (
     <form className="NewMovie" onSubmit={handleSubmit}>
-      <TextField value={title} onChange={setTitle} label="Title" />
-      <TextField value={description} onChange={setDescription} label="Description"/>
-      <TextField value={imgUrl} onChange={setImgUrl} label="Image URL" />
-      <TextField value={imdbUrl} onChange={setImdbUrl} label="IMDB URL" />
-      <TextField value={imdbId} onChange={setImdbId} label="IMDB ID" />
+      <TextField
+        name="title"
+        value={title}
+        onChange={setTitle}
+        label="Title"
+        required
+      />
 
-      <button
-        type="submit"
-        data-cy="submit-button"
-        className="button is-link"
-        disabled={isDisabled}
-      >
-        Add
-      </button>
-    </form>
-  );
+    <TextField
+      name="description"
+      value={description}
+      onChange={setDescription}
+      label="Description"
+    />
+
+    <TextField
+      name="imgUrl"
+      value={imgUrl}
+      onChange={setImgUrl}
+      label="Image URL"
+      required
+    />
+
+    <TextField
+      name="imdbUrl"
+      value={imdbUrl}
+      onChange={setImdbUrl}
+      label="IMDB URL"
+      required
+    />
+
+    <TextField
+      name="imdbId"
+      value={imdbId}
+      onChange={setImdbId}
+      label="IMDB ID"
+      required
+    />
+
+    <button
+      type="submit"
+      data-cy="submit-button"
+      className="button is-link"
+      disabled={isDisabled}
+    >
+      Add
+    </button>
+  </form>
+);
+
 };
